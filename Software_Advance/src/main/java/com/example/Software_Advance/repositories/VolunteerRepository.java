@@ -1,5 +1,4 @@
 package com.example.Software_Advance.repositories;
-
 import com.example.Software_Advance.models.Enums.Availability;
 import com.example.Software_Advance.models.Tables.Volunteer;
 import org.springframework.data.jpa.repository.JpaRepository;

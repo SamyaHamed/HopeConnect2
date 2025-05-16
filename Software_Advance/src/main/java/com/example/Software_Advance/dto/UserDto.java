@@ -3,10 +3,13 @@ package com.example.Software_Advance.dto;
 import com.example.Software_Advance.models.Enums.UserRole;
 import com.example.Software_Advance.models.Enums.UserType;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
-
-public class UserDTO {
+@Getter
+@Setter
+public class UserDto {
     private String name;
     private String password;
     private String email;
@@ -14,6 +17,4 @@ public class UserDTO {
     private String phone;
     private UserType type;
     private UserRole role;
-
-
 }

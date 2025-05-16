@@ -7,8 +7,11 @@ import lombok.Setter;
 import java.util.List;
 
 @Data
-public class DonorDTO {
-    private UserDTO user;
-    private List<DonationDTO> donations;
+@Getter
+@Setter
+public class DonorDto {
+    private UserDto user;
+    private List<DonationDto> donations;
+
 }
 

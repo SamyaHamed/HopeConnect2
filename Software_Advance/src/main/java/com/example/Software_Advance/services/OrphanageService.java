@@ -1,5 +1,4 @@
 package com.example.Software_Advance.services;
-
 import com.example.Software_Advance.models.Tables.Orphanage;
 import com.example.Software_Advance.repositories.OrphanageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import java.util.Optional;
 
 @Service
 public class OrphanageService {
-
     @Autowired
     private OrphanageRepository orphanageRepository;
 

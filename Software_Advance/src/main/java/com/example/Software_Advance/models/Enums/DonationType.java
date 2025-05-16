@@ -5,4 +5,5 @@ public enum DonationType {
     FOOD,
     MEDICAL_SUPPLIES,
     EDUCATIONAL_MATERIALS
+
 }

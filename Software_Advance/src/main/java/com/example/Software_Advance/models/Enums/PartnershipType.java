@@ -4,4 +4,5 @@ public enum PartnershipType {
     FINANCIAL,
     RESOURCE_SUPPORT,
     AWARENESS_CAMPAIGNS
+
 }

@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 
 public class Donor {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
