@@ -1,4 +1,4 @@
-/*package com.example.Software_Advance.repositories;
+package com.example.Software_Advance.repositories;
 
 import com.example.Software_Advance.models.Tables.LogisticsRequest;
 import com.example.Software_Advance.models.Enums.RequestStatus;
@@ -15,4 +15,6 @@ public interface LogisticsRequestRepository extends JpaRepository<LogisticsReque
     List<LogisticsRequest> findByDonorId(Long donorId);
 
     List<LogisticsRequest> findByOrphanageId(Long orphanageId);
-}*/
+
+    List<LogisticsRequest> findTop5ByDonorIdOrderByRequestDateDesc(Long donorId);
+}

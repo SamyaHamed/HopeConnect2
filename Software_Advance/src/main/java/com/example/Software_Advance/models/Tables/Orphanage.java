@@ -32,4 +32,9 @@ public class Orphanage {
 
     @Column(name = "verified", nullable = false)
     private boolean verified;
+
+    @OneToOne
+    @JoinColumn(name = "current_verification_id")
+    private VerifiedOrphanage currentVerification;
+
 }

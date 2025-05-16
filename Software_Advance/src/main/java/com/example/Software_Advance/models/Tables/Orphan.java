@@ -1,7 +1,5 @@
-package com.example.Software_Advance.models.Tables;
+/*package com.example.Software_Advance.models.Tables;
 
-import com.example.Software_Advance.models.Enums.EducationStatus;
-import com.example.Software_Advance.models.Enums.HealthCondition;
 import jakarta.persistence.*;
 import lombok.*;
 import jakarta.validation.constraints.*;
@@ -10,20 +8,21 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "orphan")
 @Data
 @Builder
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-@Table(name = "orphan")
 public class Orphan {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "orphan_id")
     private Long id;
 
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "orphan_id", nullable = false)
+    private User user;
 
     @NotBlank
     @Column(name = "name", nullable = false, length = 100)
@@ -33,21 +32,17 @@ public class Orphan {
     @Column(name = "age", nullable = false)
     private int age;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "education_status", length = 50, nullable = false)
-    private EducationStatus educationStatus;
+    @Column(name = "education_status", length = 255 , nullable = false)
+    private String educationStatus;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "health_condition", length = 50 , nullable = false)
-    private HealthCondition healthCondition;
+    @Column(name = "health_condition", length = 255 , nullable = false)
+    private String healthCondition;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "orphanage_id", nullable = false)
     private Orphanage orphanage;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sponsor_id")
+    @ManyToOne
+    @JoinColumn(name = "sponsor_id", nullable = true)
     private Sponsor sponsor;
-}
+}*/

@@ -16,7 +16,7 @@ public class DonationService {
     @Autowired
     private DonorRepository donorRepository;
 
-    public Donation saveDonation(DonationDTO dto, Long donorId) {
+    public Donation saveDonation(DonationDto dto, Long donorId) {
         Donor donor = donorRepository.findById(donorId)
                 .orElseThrow(() -> new RuntimeException("Donor not found"));
 
@@ -30,12 +30,12 @@ public class DonationService {
         return donationRepository.save(donation);
     }
 
-    public List<DonationDTO> getDonationByDonorId(Long id){
+    public List<DonationDto> getDonationByDonorId(Long id){
         List<Donation> donations = donationRepository.findByDonorId(id);
-        List<DonationDTO> donationDTOList = new ArrayList<>();
+        List<DonationDto> donationDTOList = new ArrayList<>();
 
         for (Donation donation : donations) {
-            DonationDTO dto = new DonationDTO(
+            DonationDto dto = new DonationDto(
                     donation.getDonationType(),
                     donation.getDonationAmount(),
                     donation.getOrganizationId(),
@@ -47,7 +47,7 @@ public class DonationService {
         return donationDTOList;
     }
     // update specific field
-    public void updateDonation(Long donationId, Long donorId, DonationDTO dto) {
+    public void updateDonation(Long donationId, Long donorId, DonationDto dto) {
         Donor donor = donorRepository.findById(donorId)
                 .orElseThrow(() -> new RuntimeException("Donor not found"));
 
@@ -78,9 +78,9 @@ public class DonationService {
             throw new RuntimeException("Donation not found with ID: " + donationId);
         }
     }
-    public List<DonationDTO> filterDonations(DonationType donationType, Double minAmount, Double maxAmount){
+    public List<DonationDto> filterDonations(DonationType donationType, Double minAmount, Double maxAmount){
         List<Donation> allDonations = donationRepository.findAll();
-        List<DonationDTO> filteredDonations = new ArrayList<>();
+        List<DonationDto> filteredDonations = new ArrayList<>();
 
         for (Donation donation : allDonations) {
             boolean matchesType = (donationType == null || donation.getDonationType() == donationType);
@@ -88,7 +88,7 @@ public class DonationService {
             boolean matchesMax = (maxAmount == null || donation.getDonationAmount() <= maxAmount);
 
             if (matchesType && matchesMin && matchesMax) {
-                filteredDonations.add(new DonationDTO(
+                filteredDonations.add(new DonationDto(
                         donation.getDonationType(),
                         donation.getDonationAmount(),
                         donation.getOrganizationId(),

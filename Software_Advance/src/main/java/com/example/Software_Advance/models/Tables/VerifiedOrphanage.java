@@ -1,4 +1,4 @@
-/*package com.example.Software_Advance.models.Tables;
+package com.example.Software_Advance.models.Tables;
 import com.example.Software_Advance.models.Enums.*;
 
 import jakarta.persistence.*;
@@ -33,5 +33,5 @@ public class VerifiedOrphanage {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 10)
-    private VerificationStatus status;
-}*/
+    private verificationStatus status;
+}

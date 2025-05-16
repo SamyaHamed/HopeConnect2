@@ -13,7 +13,7 @@ import java.util.Optional;
 @RequestMapping("/api/donors")
 public class DonorController {
     @Autowired
-    private DonorService donorService; // the object is injection in donorController without make object
+    private DonorService donorService;
 
     @GetMapping("/allDonor")
     public ResponseEntity<?> getAllDonors(){

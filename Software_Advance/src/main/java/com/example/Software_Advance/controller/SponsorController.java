@@ -15,14 +15,12 @@ public class SponsorController {
 
     private final SponsorService sponsorService;
 
-    // Create a new sponsor
     @PostMapping
     public ResponseEntity<Sponsor> saveSponsor(@Valid @RequestBody Sponsor sponsor) {
         Sponsor savedSponsor = sponsorService.saveSponsor(sponsor);
         return new ResponseEntity<>(savedSponsor, HttpStatus.CREATED);
     }
 
-    // Update sponsor
     @PatchMapping("/{id}")
     public ResponseEntity<Sponsor> updateSponsor(@PathVariable Long id, @Valid @RequestBody Sponsor updatedSponsor) {
         try {

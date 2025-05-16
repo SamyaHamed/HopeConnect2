@@ -1,9 +1,16 @@
-/*package com.example.Software_Advance.models.Tables;
+package com.example.Software_Advance.models.Tables;
 
 import com.example.Software_Advance.models.Enums.DonationType;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 @Entity
+@Setter
+@Getter
+@Data
 public class TransactionFee {
 
     @Id
@@ -27,4 +34,4 @@ public class TransactionFee {
     @Column(name = "donation_type", nullable = false)
     private DonationType donationType;
 
-}*/
+}

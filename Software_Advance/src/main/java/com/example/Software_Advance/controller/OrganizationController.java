@@ -22,23 +22,6 @@ public class OrganizationController {
     private OrganizationRepository organizationRepository;
 
 
-//    @GetMapping
-//    public ResponseEntity<List<Organization>> getAllOrganizations() {
-//        return ResponseEntity.ok(organizationService.getAllOrganizations());
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getOrganizationById(@PathVariable Long id) {
-//        Optional<Organization> org = organizationService.getOrganizationById(id);
-//        if (org.isPresent()) {
-//            return ResponseEntity.ok(org.get());
-//        } else {
-//            String errorMessage = "Organization not found with ID: " + id;
-//            return ResponseEntity.status(404).body(errorMessage);
-//        }
-//    }
-
-
     @GetMapping("/service-type/{type}")
     public ResponseEntity<List<Organization>> getByServiceType(@PathVariable ServiceType type) {
         return ResponseEntity.ok(organizationService.getOrganizationsByServiceType(type));

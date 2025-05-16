@@ -2,9 +2,13 @@ package com.example.Software_Advance.models.Tables;
 
 import com.example.Software_Advance.models.Enums.CampaignStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
 @Entity
+@Setter @Getter
 @Table(name = "relief_campaigns")
 public class ReliefCampaign {
 
@@ -19,7 +23,6 @@ public class ReliefCampaign {
     @Column(nullable = false)
     private String title;
 
-    @Lob
     @Column(nullable = false)
     private String description;
 
@@ -40,4 +43,8 @@ public class ReliefCampaign {
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date endDate;
+    @Column(nullable = false)
+    private Boolean deliveredToAllDonors = false;
+
+
 }

@@ -1,12 +1,18 @@
-/*package com.example.Software_Advance.models.Tables;
+package com.example.Software_Advance.models.Tables;
 
 import com.example.Software_Advance.models.Enums.DonationType;
 import com.example.Software_Advance.models.Enums.RequestStatus;
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.Date;
 
 @Entity
 @Table(name = "logistics_requests")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class LogisticsRequest {
 
     @Id
@@ -38,7 +44,7 @@ public class LogisticsRequest {
     @Column(nullable = false)
     private RequestStatus status;
 
-    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "request_date", nullable = false)
     private Date requestDate;
-}*/
+}
