@@ -1,9 +1,13 @@
 package com.example.Software_Advance.models.Tables;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "orphanage")
@@ -32,4 +36,10 @@ public class Orphanage {
 
     @Column(name = "verified", nullable = false)
     private boolean verified;
+
+    @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy = "orphanage", cascade = CascadeType.ALL)
+    private List<HelpRequest> helpRequests;
+
 }

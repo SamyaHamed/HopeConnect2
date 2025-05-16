@@ -82,6 +82,10 @@ public class User {
     @JsonManagedReference
     private Orphanage orphanage;
 
+    public Long getUserId(){
+        return id;
+    }
+
 
 }
 

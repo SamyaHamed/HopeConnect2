@@ -1,11 +1,16 @@
  package com.example.Software_Advance.models.Tables;
 import com.example.Software_Advance.models.Enums.Availability;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
  import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-    @Entity
+import java.util.ArrayList;
+import java.util.List;
+
+ @Entity
     @Table(name = "volunteer")
     @Getter @Setter
     @NoArgsConstructor
@@ -35,4 +40,13 @@ import lombok.*;
         @NotBlank(message = "Status is required")
         @Column(name = "status", nullable = false)
         private String status;
-    }
+
+     @JsonIgnore
+     @JsonManagedReference
+     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+     private List<OrgVolunteer> orgVolunteers = new ArrayList<>();
+
+     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+     private List<VolunteerMatch> matches;
+
+ }

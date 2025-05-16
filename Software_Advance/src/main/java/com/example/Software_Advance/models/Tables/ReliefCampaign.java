@@ -1,4 +1,4 @@
-package com.example.Software_Advance.models.Tables;
+/*package com.example.Software_Advance.models.Tables;
 
 import com.example.Software_Advance.models.Enums.CampaignStatus;
 import jakarta.persistence.*;
@@ -40,4 +40,4 @@ public class ReliefCampaign {
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date endDate;
-}
+}*/

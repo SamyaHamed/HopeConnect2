@@ -1,4 +1,4 @@
-/*package com.example.Software_Advance.repositories;
+package com.example.Software_Advance.repositories;
 
 import com.example.Software_Advance.models.Tables.VolunteerMatch;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +19,4 @@ public interface VolunteerMatchRepository extends JpaRepository<VolunteerMatch, 
     List<VolunteerMatch> findByMatchedAt(LocalDateTime matchedAt);
 
     List<VolunteerMatch> findByVolunteerIdAndRequestId(Long volunteerId, Long requestId);
-}*/
+}

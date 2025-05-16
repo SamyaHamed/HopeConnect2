@@ -2,11 +2,15 @@
 
 import com.example.Software_Advance.models.Enums.ServiceType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
             import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-    @Entity
+import java.util.List;
+
+ @Entity
     @Table(name = "organization")
     @Getter @Setter
     @NoArgsConstructor
@@ -26,4 +30,10 @@ import lombok.*;
         @Column(nullable = false)
         @Enumerated(EnumType.STRING)
         private ServiceType serviceType;
+
+        @JsonIgnore
+        @JsonManagedReference
+        @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+        private List<OrgVolunteer> orgVolunteers;
+
     }

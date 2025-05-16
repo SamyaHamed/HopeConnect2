@@ -3,11 +3,11 @@ package com.example.Software_Advance.dto;
 import lombok.Data;
 
 @Data
-public class CreateUserRequestDTO {
-    private UserDTO user;
-    private DonorDTO donor;
-    private SponsorDTO sponsor;
-    private VolunteerDTO volunteer;
-    private OrganizationDTO organization;
-    private OrphanageDTO orphanage;
+public class CreateUserRequestDto {
+    private UserDto user;
+    private DonorDto donor;
+    private SponsorDto sponsor;
+    private VolunteerDto volunteer;
+    private OrganizationDto organization;
+    private OrphanageDto orphanage;
 }

@@ -5,12 +5,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-
+@Getter @Setter
 @Data
-public class OrphanageDTO {
-    private UserDTO user;
+public class OrphanageDto {
+    private UserDto user;
     private int orphanCount;
     private boolean verified;
-        private int capacity;
+    private int capacity;
 
 }

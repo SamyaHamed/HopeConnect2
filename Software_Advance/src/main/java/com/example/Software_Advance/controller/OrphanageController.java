@@ -4,7 +4,7 @@ import com.example.Software_Advance.models.Tables.Orphanage;
 import com.example.Software_Advance.services.OrphanageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.example.Software_Advance.dto.OrphanageDTO;
+import com.example.Software_Advance.dto.OrphanageDto;
 import java.util.List;
 
 @RestController
@@ -30,11 +30,11 @@ public class OrphanageController {
     }
 
     @PutMapping("/{id}/capacity")
-    public Orphanage updateOrphanageCapacity(@PathVariable Long id, @RequestBody OrphanageDTO request) {
+    public Orphanage updateOrphanageCapacity(@PathVariable Long id, @RequestBody OrphanageDto request) {
         return orphanageService.updateOrphanageCapacity(id, request.getCapacity());
     }
     @PutMapping("/{id}/orphan-count")
-    public Orphanage updateOrphanCount(@PathVariable Long id, @RequestBody OrphanageDTO request) {
+    public Orphanage updateOrphanCount(@PathVariable Long id, @RequestBody OrphanageDto request) {
         return orphanageService.updateOrphanCount(id, request.getOrphanCount());
     }
 
