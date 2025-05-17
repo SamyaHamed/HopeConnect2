@@ -16,4 +16,3 @@ public class VolunteerDto {
     private Availability availability;
     private String status;
 }
-

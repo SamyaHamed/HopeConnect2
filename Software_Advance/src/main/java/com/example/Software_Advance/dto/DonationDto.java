@@ -14,14 +14,16 @@ public class DonationDto {
     private Long organizationId;
     private PaymentType paymentType;
     private Double donationAmount;
+
     public DonationDto(DonationType donationType, Double donationAmount) {
         this.donationType = donationType;
         this.donationAmount = donationAmount;
     }
+
     public DonationDto(DonationType donationType, Double donationAmount, Long organizationId, PaymentType paymentType) {
         this.donationType = donationType;
         this.donationAmount = donationAmount;
         this.organizationId = organizationId;
         this.paymentType = paymentType;
     }
-
+}
