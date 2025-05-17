@@ -1,5 +1,4 @@
-/*package com.example.Software_Advance.repositories;
-
+package com.example.Software_Advance.repositories;
 import com.example.Software_Advance.models.Tables.ShipmentTracking;
 import com.example.Software_Advance.models.Enums.ShipmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +17,6 @@ public interface ShipmentTrackingRepository extends JpaRepository<ShipmentTracki
     List<ShipmentTracking> findByUpdateTimeAfter(LocalDateTime updateTime);
 
     List<ShipmentTracking> findByCurrentLocation(String currentLocation);
-}*/
+
+    List<ShipmentTracking> findByUpdateTimeBetween(LocalDateTime startDate, LocalDateTime endDate);
+}

@@ -1,15 +1,20 @@
-
-/*
 package com.example.Software_Advance.models.Tables;
 
 import com.example.Software_Advance.models.Enums.ShipmentStatus;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDateTime;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "shipment_tracking")
 public class ShipmentTracking {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -28,4 +33,4 @@ public class ShipmentTracking {
 
     @Column(name = "update_time", nullable = false)
     private LocalDateTime updateTime;
-}*/
+}

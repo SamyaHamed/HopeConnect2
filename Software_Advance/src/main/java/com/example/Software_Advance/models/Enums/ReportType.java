@@ -5,4 +5,5 @@ public enum ReportType {
     TRANSACTION_FEES,
     PARTNERSHIP_ACTIVITY,
     CAMPAIGN_PERFORMANCE
+
 }

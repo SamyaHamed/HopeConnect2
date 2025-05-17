@@ -25,5 +25,3 @@ public class DonationDto {
         this.paymentType = paymentType;
     }
 
-
-}

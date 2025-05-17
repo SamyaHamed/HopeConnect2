@@ -2,17 +2,19 @@
 
 import com.example.Software_Advance.models.Enums.ServiceType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
             import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-    @Entity
+import java.util.List;
+
+ @Entity
     @Table(name = "organization")
     @Getter @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public class Organization {
-
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
@@ -26,4 +28,9 @@ import lombok.*;
         @Column(nullable = false)
         @Enumerated(EnumType.STRING)
         private ServiceType serviceType;
-    }
+
+     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+     @JsonManagedReference
+     private List<Partnership> partnerships;
+
+ }

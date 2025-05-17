@@ -18,18 +18,6 @@ public class VolunteerController {
     @Autowired
     private VolunteerRepository volunteerRepository;
 
-//    @GetMapping
-//    public ResponseEntity<List<Volunteer>> getAllVolunteers() {
-//        List<Volunteer> volunteers = volunteerRepository.findAll();
-//        return ResponseEntity.ok(volunteers);
-//    }
-
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Volunteer> getVolunteerById(@PathVariable Long id) {
-//        Optional<Volunteer> volunteer = volunteerRepository.findById(id);
-//        return volunteer.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-//    }
-
     @PutMapping("/{id}/status")
     public ResponseEntity<String> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> statusBody) {
         Optional<Volunteer> optional = volunteerRepository.findById(id);

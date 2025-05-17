@@ -6,4 +6,5 @@ public enum ServiceType {
     FOOD_SUPPORT,
     ORPHAN_CARE,
     SOCIAL_SERVICES
+
 }

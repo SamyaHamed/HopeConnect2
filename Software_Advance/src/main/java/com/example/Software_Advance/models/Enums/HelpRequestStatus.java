@@ -5,4 +5,5 @@ public enum HelpRequestStatus {
     MATCHED,
     COMPLETED,
     CANCELLED
+
 }

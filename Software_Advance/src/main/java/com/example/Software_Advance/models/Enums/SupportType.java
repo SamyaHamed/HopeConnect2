@@ -5,4 +5,5 @@ public enum SupportType {
     EDUCATIONAL,
     MEDICAL,
     GENERAL
+
 }

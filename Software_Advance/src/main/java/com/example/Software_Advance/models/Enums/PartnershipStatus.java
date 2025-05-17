@@ -4,4 +4,5 @@ public enum PartnershipStatus {
     ACTIVE,
     INACTIVE,
     PENDING
+
 }
