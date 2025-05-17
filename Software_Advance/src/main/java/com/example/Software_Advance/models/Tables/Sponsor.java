@@ -1,10 +1,13 @@
 package com.example.Software_Advance.models.Tables;
 import com.example.Software_Advance.models.Enums.SponsorshipType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "sponsor")
@@ -23,7 +26,7 @@ public class Sponsor {
 
 
 
-    @NotBlank(message = "Sponsorship type is required")
+    @NotNull(message = "Sponsorship type is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "sponsorship_type", nullable = false)
     private SponsorshipType sponsorshipType;
@@ -35,4 +38,8 @@ public class Sponsor {
     @NotBlank(message = "Status is required")
     @Column(name = "status", nullable = false)
     private String status;
+
+    @OneToMany(mappedBy = "sponsor")
+    @JsonManagedReference
+    private List<Orphan> sponsoredOrphans;
 }

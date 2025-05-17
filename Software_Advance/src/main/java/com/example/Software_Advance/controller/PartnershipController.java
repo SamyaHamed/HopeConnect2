@@ -5,11 +5,12 @@ import com.example.Software_Advance.models.Enums.PartnershipStatus;
 import com.example.Software_Advance.models.Enums.PartnershipType;
 import com.example.Software_Advance.models.Tables.Partnership;
 import com.example.Software_Advance.services.PartnershipService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/Partnership")
@@ -23,6 +24,8 @@ public class PartnershipController {
         Partnership partnership = partnershipService.addPartnership(request , request.getOrganizationId());
         return ResponseEntity.ok("Partnership added successfully!");
     }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<PartnershipDto> updatePartnership(@PathVariable Long id,
                                                             @RequestBody PartnershipDto request) {
@@ -42,35 +45,47 @@ public class PartnershipController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReview(@PathVariable Long partnershipId) {
-        partnershipService.deletePartnership(partnershipId);
+    public ResponseEntity<String> deletePartnership(@PathVariable Long id) {
+        partnershipService.deletePartnership(id);
         return ResponseEntity.ok("Partnership deleted successfully!");
     }
 
-    // 1. Get all partnerships by organization ID
-    @GetMapping("/organization/{orgId}")
-    public ResponseEntity<List<Partnership>> getPartnershipsByOrganization(@PathVariable Long orgId) {
-        return ResponseEntity.ok(partnershipService.getPartnershipsByOrganizationId(orgId));
-    }
-
-    // 2. Get partnerships by type
     @GetMapping("/type/{type}")
     public ResponseEntity<List<Partnership>> getPartnershipsByType(@PathVariable PartnershipType type) {
         return ResponseEntity.ok(partnershipService.getPartnershipByType(type));
     }
 
-    // 3. Get partnerships by organization ID and status
     @GetMapping("/organization/{orgId}/status/{status}")
     public ResponseEntity<List<Partnership>> getByOrgAndStatus(@PathVariable Long orgId,
                                                                @PathVariable PartnershipStatus status) {
         return ResponseEntity.ok(partnershipService.getByOrganizationAndStatus(orgId, status));
     }
 
-    // 4. Get all partnerships sorted by agreement date
     @GetMapping("/sorted/agreement-date")
     public ResponseEntity<List<Partnership>> getAllSortedByAgreementDate() {
         return ResponseEntity.ok(partnershipService.getAllSortedByAgreementDate());
     }
 
+    @GetMapping("/organization/{organizationId}")
+    public ResponseEntity<List<Partnership>> getPartnershipsByOrganizationId(@PathVariable Long organizationId) {
+        List<Partnership> partnerships = partnershipService.getPartnershipsByOrganizationId(organizationId);
+        return ResponseEntity.ok(partnerships);
+    }
 
+    // ======= Exception Handlers =======
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneralException(Exception ex) {
+        return ResponseEntity.status(500).body("Internal Server Error: " + ex.getMessage());
+    }
 }

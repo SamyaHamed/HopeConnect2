@@ -1,14 +1,18 @@
 package com.example.Software_Advance.services;
+
+import com.example.Software_Advance.exceptions.BadRequestException;
+import com.example.Software_Advance.exceptions.ResourceNotFoundException;
 import com.example.Software_Advance.models.Enums.PartnershipStatus;
 import com.example.Software_Advance.models.Enums.PartnershipType;
 import com.example.Software_Advance.models.Tables.Organization;
 import com.example.Software_Advance.models.Tables.Partnership;
-import com.example.Software_Advance.repositories.*;
-import com.example.Software_Advance.dto.*;
+import com.example.Software_Advance.repositories.OrganizationRepository;
+import com.example.Software_Advance.repositories.PartnershipRepository;
+import com.example.Software_Advance.dto.PartnershipDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,13 +20,20 @@ import java.util.List;
 public class PartnershipService {
     @Autowired
     PartnershipRepository partnershipRepository;
+
     @Autowired
     OrganizationRepository organizationRepository;
-
-
     public Partnership addPartnership(PartnershipDto partnershipDTO, Long organizationID) {
         Organization organization = organizationRepository.findById(organizationID)
-                .orElseThrow(() -> new RuntimeException("Organization not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Organization not found with ID: " + organizationID));
+
+        List<Partnership> existing = partnershipRepository.findByEmail(partnershipDTO.getEmail());
+        boolean duplicateExists = existing.stream()
+                .anyMatch(p -> p.getOrganization().getId().equals(organizationID));
+
+        if (duplicateExists) {
+            throw new BadRequestException("Partnership with this email already exists for the organization");
+        }
 
         Partnership partnership = Partnership.builder()
                 .email(partnershipDTO.getEmail())
@@ -37,10 +48,18 @@ public class PartnershipService {
 
         return partnershipRepository.save(partnership);
     }
+    public List<Partnership> getPartnershipsByOrganizationId(Long organizationId) {
+        // تحقق أولاً من وجود الـ Organization
+        Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Organization not found with ID: " + organizationId));
+
+        // الآن ابحث عن الـ Partnerships
+        return partnershipRepository.findByOrganizationId(organizationId);
+    }
 
     public Partnership updatePartnership(Long partnershipId, PartnershipDto partnershipDTO) {
         Partnership partnership = partnershipRepository.findById(partnershipId)
-                .orElseThrow(() -> new EntityNotFoundException("Partnership not found with ID: " + partnershipId));
+                .orElseThrow(() -> new ResourceNotFoundException("Partnership not found with ID: " + partnershipId));
 
         if (partnershipDTO.getEmail() != null) {
             partnership.setEmail(partnershipDTO.getEmail());
@@ -55,9 +74,14 @@ public class PartnershipService {
             partnership.setAgreementDate(partnershipDTO.getAgreementDate());
         }
         if (partnershipDTO.getEndDate() != null) {
-            if (partnershipDTO.getEndDate().isBefore(partnershipDTO.getAgreementDate())) {
-                throw new IllegalArgumentException("End date cannot be before agreement date");
+            LocalDate agreementDate = partnershipDTO.getAgreementDate() != null
+                    ? partnershipDTO.getAgreementDate()
+                    : partnership.getAgreementDate();
+
+            if (partnershipDTO.getEndDate().isBefore(agreementDate)) {
+                throw new BadRequestException("End date cannot be before agreement date");
             }
+
             partnership.setEndDate(partnershipDTO.getEndDate());
         }
 
@@ -66,23 +90,23 @@ public class PartnershipService {
         return partnershipRepository.save(partnership);
     }
 
+
     public void deletePartnership(Long partnershipId) {
         if (!partnershipRepository.existsById(partnershipId)) {
-            throw new EntityNotFoundException("Partnership with ID " + partnershipId + " not found");
+            throw new ResourceNotFoundException("Partnership with ID " + partnershipId + " not found");
         }
         partnershipRepository.deleteById(partnershipId);
     }
 
 
-    public List<Partnership> getPartnershipsByOrganizationId(Long orgId) {
-        return partnershipRepository.findByOrganizationId(orgId);
-    }
-    public List<Partnership> getPartnershipByType(PartnershipType type){
+    public List<Partnership> getPartnershipByType(PartnershipType type) {
         return partnershipRepository.findByPartnershipType(type);
     }
+
     public List<Partnership> getByOrganizationAndStatus(Long orgId, PartnershipStatus status) {
         return partnershipRepository.findByOrganizationIdAndStatus(orgId, status);
     }
+
     public List<Partnership> getAllSortedByAgreementDate() {
         return partnershipRepository.findAllByOrderByAgreementDateAsc();
     }

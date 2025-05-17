@@ -37,4 +37,12 @@ public class Donation {
     @JoinColumn(name = "donor_id", nullable = false)
     @JsonBackReference
     private Donor donor;
+
+    @Column(name = "payment_intent_id", unique = true)
+    private String paymentIntentId;
+
+    @Column(name = "payment_status")
+    private String paymentStatus;
+
+
 }

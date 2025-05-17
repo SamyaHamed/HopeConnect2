@@ -5,7 +5,7 @@ import com.example.Software_Advance.models.Enums.ReviewTargetType;
 import com.example.Software_Advance.models.Tables.Review;
 import com.example.Software_Advance.models.Tables.User;
 import com.example.Software_Advance.repositories.ReviewRepository;
-import com.example.Software_Advance.repositories.*;
+import com.example.Software_Advance.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,12 +1,12 @@
 package com.example.Software_Advance.services;
 
 import com.example.Software_Advance.dto.LogisticsRequestDto;
+import com.example.Software_Advance.exceptions.ResourceNotFoundException;
 import com.example.Software_Advance.models.Tables.*;
 import com.example.Software_Advance.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,23 +24,13 @@ public class LogisticsRequestService {
 
     public LogisticsRequest createRequest(LogisticsRequestDto dto) {
         Donor donor = donorRepository.findById(dto.getDonorId())
-                .orElseThrow(() -> new RuntimeException("Donor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with id: " + dto.getDonorId()));
         Orphanage orphanage = orphanageRepository.findById(dto.getOrphanageId())
-                .orElseThrow(() -> new RuntimeException("Orphanage not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Orphanage not found with id: " + dto.getOrphanageId()));
 
         LogisticsRequest request = new LogisticsRequest();
-        request.setDonor(donor);
-        request.setOrphanage(orphanage);
-        request.setDonationType(dto.getDonationType());
-        request.setQuantity(dto.getQuantity());
-        request.setPickupLocation(dto.getPickupLocation());
-        request.setDeliveryLocation(dto.getDeliveryLocation());
-        request.setStatus(dto.getStatus());
-        request.setRequestDate(new Date());
-
         return repository.save(request);
     }
-
     public List<LogisticsRequest> getAllRequests() {
         return repository.findAll();
     }
@@ -59,29 +49,24 @@ public class LogisticsRequestService {
                         Collectors.counting()
                 ));
     }
+
     public LogisticsRequest updateRequest(Long id, LogisticsRequestDto dto) {
         Donor donor = donorRepository.findById(dto.getDonorId())
-                .orElseThrow(() -> new RuntimeException("Donor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with id: " + dto.getDonorId()));
         Orphanage orphanage = orphanageRepository.findById(dto.getOrphanageId())
-                .orElseThrow(() -> new RuntimeException("Orphanage not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Orphanage not found with id: " + dto.getOrphanageId()));
 
         return repository.findById(id)
                 .map(request -> {
-                    request.setDonor(donor);
-                    request.setOrphanage(orphanage);
-                    request.setDonationType(dto.getDonationType());
-                    request.setQuantity(dto.getQuantity());
-                    request.setPickupLocation(dto.getPickupLocation());
-                    request.setDeliveryLocation(dto.getDeliveryLocation());
-                    request.setStatus(dto.getStatus());
-                    request.setRequestDate(new Date());
                     return repository.save(request);
                 })
-                .orElseThrow(() -> new RuntimeException("Request not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("LogisticsRequest not found with id: " + id));
     }
 
-
     public void deleteRequest(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("LogisticsRequest not found with id: " + id);
+        }
         repository.deleteById(id);
     }
 }

@@ -1,8 +1,10 @@
 package com.example.Software_Advance.controller;
+
 import com.example.Software_Advance.dto.ReviewDto;
 import com.example.Software_Advance.models.Enums.ReviewTargetType;
 import com.example.Software_Advance.models.Tables.Review;
 import com.example.Software_Advance.services.ReviewService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,5 +72,23 @@ public class ReviewController {
                 review.getRating(),
                 review.getReviewText()
         );
+    }
+
+
+    // ===== Exception Handlers =====
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGeneralException(Exception ex) {
+        return ResponseEntity.status(500).body("Internal Server Error: " + ex.getMessage());
     }
 }

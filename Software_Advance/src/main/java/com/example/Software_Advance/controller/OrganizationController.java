@@ -28,23 +28,9 @@ public class OrganizationController {
 
     @PutMapping("/{id}/service-type")
     public ResponseEntity<String> updateServiceType(@PathVariable Long id, @RequestBody Map<String, String> body) {
-        Optional<Organization> optional = organizationRepository.findById(id);
-
-        if (optional.isEmpty()) {
-            return ResponseEntity.status(404).body("Organization not found with ID: " + id);
-        }
-
-        Organization org = optional.get();
         String typeStr = body.get("serviceType");
-
-        try {
-            ServiceType serviceTypeEnum = ServiceType.valueOf(typeStr.toUpperCase().trim());
-            org.setServiceType(serviceTypeEnum);
-            organizationRepository.save(org);
-            return ResponseEntity.ok("Service type updated successfully.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid service type value.");
-        }
+        organizationService.updateServiceType(id, typeStr);
+        return ResponseEntity.ok("Service type updated successfully.");
     }
 
 

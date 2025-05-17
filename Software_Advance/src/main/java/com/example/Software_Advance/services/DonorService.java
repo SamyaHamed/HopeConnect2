@@ -1,12 +1,16 @@
 package com.example.Software_Advance.services;
+
 import com.example.Software_Advance.models.Tables.Donor;
 import com.example.Software_Advance.repositories.DonorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class DonorService {
+
     @Autowired
     private DonorRepository donorRepository;
 
@@ -25,6 +29,4 @@ public class DonorService {
             throw new RuntimeException("Donor not found with ID: " + id);
         }
     }
-
-
 }

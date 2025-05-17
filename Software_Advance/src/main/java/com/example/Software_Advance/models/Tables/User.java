@@ -1,19 +1,27 @@
 package com.example.Software_Advance.models.Tables;
-
 import com.example.Software_Advance.models.Enums.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,7 +39,6 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-
     @NotBlank(message = "Password is required")
     @Column(name = "password", nullable = false)
     private String password;
@@ -45,47 +52,70 @@ public class User {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-
-    @NotBlank(message = "User type is required")
+    @NotNull(message = "User type is required")
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable =true)
+    @Column(name = "type", nullable = true)
     private UserType type;
 
-
-    @NotBlank(message = "User role is required")
+    @NotNull(message = "User role is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
 
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = true,fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Sponsor sponsor;
 
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true ,optional = true ,fetch = FetchType.EAGER)
-   @JsonManagedReference
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Donor donor;
 
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = true,fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Volunteer volunteer;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = true,fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Organization organization;
 
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = true,fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Orphanage orphanage;
 
+    // --- UserDetails Methods ---
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
-
-
-
-
-
-

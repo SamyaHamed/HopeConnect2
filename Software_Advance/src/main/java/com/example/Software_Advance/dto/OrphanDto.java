@@ -15,9 +15,9 @@ public class OrphanDto {
     private EducationStatus educationStatus;
     private HealthCondition healthCondition ;
     private Long orphanageId;
-   private String orphanageName;//output
+    private String orphanageName;//output
     private Long sponsorId;
- private String sponsorName;//output
+    private String sponsorName;//output
 
 
     public OrphanDto(Orphan orphan) {

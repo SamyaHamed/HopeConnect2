@@ -2,10 +2,14 @@ package com.example.Software_Advance.services;
 
 import ch.qos.logback.classic.Logger;
 import com.example.Software_Advance.dto.*;
+import com.example.Software_Advance.exceptions.DuplicateUserException;
+import com.example.Software_Advance.exceptions.UserNotFoundException;
+import com.example.Software_Advance.models.Enums.ParticipationStatus;
 import com.example.Software_Advance.models.Enums.UserType;
 import com.example.Software_Advance.models.Tables.*;
 import com.example.Software_Advance.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -24,28 +28,34 @@ public class UserService {
     @Autowired
     private SponsorRepository sponsorRepository;
 
-   @Autowired
+    @Autowired
     private VolunteerRepository volunteerRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
-
+    @Autowired
+    private OrgVolunteerRepository orgVolunteerRepository;
     @Autowired
     private OrphanageRepository orphanageRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private OrphanRepository orphanRepository;
 
     public User saveUser(CreateUserRequestDto requestDTO) {
         UserDto userDTO = requestDTO.getUser();
 
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            log.warn("User with email {} already exists.", userDTO.getEmail());
-            return null;
+            throw new DuplicateUserException("User with email " + userDTO.getEmail() + " already exists.");
         }
 
         User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
+        String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
+        user.setPassword(hashedPassword);
+
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
         user.setType(userDTO.getType());
@@ -76,18 +86,38 @@ public class UserService {
                 donor.setDonations(donationList);
                 savedUser.setDonor(donor);
                 donorRepository.save(donor);
+
+
+            SponsorDto sponsorDTO = requestDTO.getSponsor();
+
+            if (sponsorDTO == null || sponsorDTO.getOrphans() == null || sponsorDTO.getOrphans().isEmpty()) {
+                throw new IllegalArgumentException("Should add at least one orphan");
             }
 
-           case SPONSOR -> {
-                SponsorDto sponsorDTO = requestDTO.getSponsor();
-                Sponsor sponsor = new Sponsor();
-                sponsor.setUser(savedUser);
-                sponsor.setSponsorshipType(sponsorDTO.getSponsorshipType());
-                sponsor.setStartDate(sponsorDTO.getStartDate());
-                sponsor.setStatus(sponsorDTO.getStatus());
+            Sponsor sponsor = new Sponsor();
+            sponsor.setUser(savedUser);
+            sponsor.setSponsorshipType(sponsorDTO.getSponsorshipType());
+            sponsor.setStartDate(sponsorDTO.getStartDate());
+            sponsor.setStatus(sponsorDTO.getStatus());
 
-               savedUser.setSponsor(sponsor);
-               sponsorRepository.save(sponsor);
+            savedUser.setSponsor(sponsor);
+            sponsorRepository.save(sponsor);
+
+            for (OrphanDto orphanDto : sponsorDTO.getOrphans()) {
+                Orphan orphan = new Orphan();
+                orphan.setName(orphanDto.getName());
+                orphan.setAge(orphanDto.getAge());
+                orphan.setEducationStatus(orphanDto.getEducationStatus());
+                orphan.setHealthCondition(orphanDto.getHealthCondition());
+
+                Orphanage orphanage = orphanageRepository.findById(orphanDto.getOrphanageId())
+                        .orElseThrow(() -> new IllegalArgumentException("Orphanage not found with ID: " + orphanDto.getOrphanageId()));
+
+                orphan.setOrphanage(orphanage);
+                orphan.setSponsor(sponsor);
+
+                orphanRepository.save(orphan);
+            }
             }
 
             case VOLUNTEER -> {
@@ -98,18 +128,32 @@ public class UserService {
                 volunteer.setSkills(volunteerDTO.getSkills());
                 volunteer.setAvailability(volunteerDTO.getAvailability());
                 volunteer.setStatus(volunteerDTO.getStatus());
+                Volunteer savedVolunteer = volunteerRepository.save(volunteer);
 
-                savedUser.setVolunteer(volunteer);
-                volunteerRepository.save(volunteer);
+                OrgVolunteer orgVolunteer = new OrgVolunteer();
+                orgVolunteer.setVolunteer(savedVolunteer);
+                orgVolunteer.setSkills(volunteerDTO.getSkills());
+                orgVolunteer.setParticipationStatus(ParticipationStatus.PENDING);
+
+
+                if (volunteerDTO.getOrganizationId() != null) {
+                    Optional<Organization> organizationOpt = organizationRepository.findById(volunteerDTO.getOrganizationId());
+                    organizationOpt.ifPresent(orgVolunteer::setOrganization);
+                } else {
+                    orgVolunteer.setOrganization(null);
+                }
+
+                OrgVolunteer saved= orgVolunteerRepository.save(orgVolunteer);
+                savedUser.setVolunteer(savedVolunteer);
             }
-              case ORGANIZATION -> {
+            case ORGANIZATION -> {
                 OrganizationDto organizationDTO = requestDTO.getOrganization();
                 Organization organization = new Organization();
                 organization.setUser(savedUser);
                 organization.setServiceType(organizationDTO.getServiceType());
 
-                  savedUser.setOrganization(organization);
-                  organizationRepository.save(organization);
+                savedUser.setOrganization(organization);
+                organizationRepository.save(organization);
             }
 
             case ORPHANAGE -> {
@@ -137,7 +181,31 @@ public class UserService {
     }
 
     public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty()) {
+            throw new UserNotFoundException("User with ID " + id + " was not found.");
+        }
+        return user;
+    }
+
+    public User updateUser(Long id, UserDto userDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setPhone(userDTO.getPhone());
+        user.setAddress(userDTO.getAddress());
+
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User with ID " + id + " was not found.");
+        }
+        userRepository.deleteById(id);
     }
 
     public boolean existsByEmail(String email) {
@@ -153,10 +221,5 @@ public class UserService {
         return userRepository.findByType(type);
     }
 
-    public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            return;
-        }
-        userRepository.deleteById(id);
-    }
+
 }

@@ -1,7 +1,10 @@
 package com.example.Software_Advance.controller;
 import ch.qos.logback.classic.Logger;
 import com.example.Software_Advance.dto.CreateUserRequestDto;
+import com.example.Software_Advance.dto.OrphanDto;
+import com.example.Software_Advance.dto.UserDto;
 import com.example.Software_Advance.models.Enums.UserType;
+import com.example.Software_Advance.models.Tables.Orphan;
 import com.example.Software_Advance.models.Tables.User;
 import com.example.Software_Advance.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     Logger log;
+
 
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequestDto requestDTO) {
@@ -52,23 +56,29 @@ public class UserController {
         List <User> users =userService.getUserByType(type);
         if(users.isEmpty())
         {return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("There are no users with this Type "+ type+ ".");
+                .body("There are no users with this Type "+ type+ ".");
         }
         return ResponseEntity.ok(users);
     }
 
 
     @GetMapping("/by-id/{id}")
-    public ResponseEntity<String> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
-        if(user.isEmpty()){
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        Optional<User> userOptional = userService.getUserById(id);
+        if(userOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("User with ID " + id+ " was not found.");
         }
         else{
-            return ResponseEntity.ok(user.get().toString());       }
+            return ResponseEntity.ok(userOptional);       }
     }
 
+
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody UserDto userDTO) {
+        return userService.updateUser(id, userDTO);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {

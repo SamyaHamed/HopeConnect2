@@ -1,39 +1,36 @@
 package com.example.Software_Advance.services;
-import ch.qos.logback.classic.Logger;
+
+import com.example.Software_Advance.exceptions.VolunteerNotFoundException;
 import com.example.Software_Advance.models.Enums.Availability;
-import com.example.Software_Advance.models.Tables.*;
-import com.example.Software_Advance.repositories.*;
+import com.example.Software_Advance.models.Tables.Volunteer;
+import com.example.Software_Advance.repositories.VolunteerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class VolunteerService {
-    Logger log;
+
+    private static final Logger log = LoggerFactory.getLogger(VolunteerService.class);
 
     @Autowired
     private VolunteerRepository volunteerRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private OrganizationRepository organizationRepository;
-
     public Volunteer saveVolunteer(Volunteer volunteer) {
+        log.info("Saving volunteer: {}", volunteer.getUser().getName());
         return volunteerRepository.save(volunteer);
     }
-
-
 
     public List<Volunteer> getAllVolunteers() {
         return volunteerRepository.findAll();
     }
 
-    public Optional<Volunteer> getVolunteerById(Long id) {
-        return volunteerRepository.findById(id);
+    public Volunteer getVolunteerById(Long id) {
+        return volunteerRepository.findById(id)
+                .orElseThrow(() -> new VolunteerNotFoundException(id));
     }
 
     public List<Volunteer> getVolunteersByOrganization(Long organizationId) {
@@ -54,10 +51,10 @@ public class VolunteerService {
 
     public void deleteVolunteer(Long id) {
         if (!volunteerRepository.existsById(id)) {
-            log.warn(">>> Volunteer not found with ID: " + id);
-            return;
+            log.warn("Volunteer not found with ID: {}", id);
+            throw new VolunteerNotFoundException(id);
         }
         volunteerRepository.deleteById(id);
-        log.info(">>> Volunteer with ID {} deleted.", id);
+        log.info("Volunteer with ID {} deleted.", id);
     }
 }

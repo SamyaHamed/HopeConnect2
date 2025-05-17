@@ -1,35 +1,49 @@
 package com.example.Software_Advance.services;
+
+import com.example.Software_Advance.dto.DonationDto;
+import com.example.Software_Advance.exceptions.BadRequestException;
+import com.example.Software_Advance.exceptions.ResourceNotFoundException;
+import com.example.Software_Advance.externalApi.PaymentService;
 import com.example.Software_Advance.models.Enums.DonationType;
 import com.example.Software_Advance.models.Tables.Donation;
 import com.example.Software_Advance.models.Tables.Donor;
+import com.example.Software_Advance.repositories.DonationRepository;
+import com.example.Software_Advance.repositories.DonorRepository;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.example.Software_Advance.repositories.*;
-import com.example.Software_Advance.dto.*;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class DonationService {
+
     @Autowired
     private DonationRepository donationRepository;
+
     @Autowired
     private DonorRepository donorRepository;
 
+    @Autowired
+    private PaymentService paymentService;
+
     public Donation saveDonation(DonationDto dto, Long donorId) {
         Donor donor = donorRepository.findById(donorId)
-                .orElseThrow(() -> new RuntimeException("Donor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with ID: " + donorId));
 
         Donation donation = new Donation();
         donation.setDonationType(dto.getDonationType());
         donation.setDonationAmount(dto.getDonationAmount());
         donation.setOrganizationId(dto.getOrganizationId());
         donation.setPaymentType(dto.getPaymentType());
-
         donation.setDonor(donor);
+
         return donationRepository.save(donation);
     }
 
-    public List<DonationDto> getDonationByDonorId(Long id){
+    public List<DonationDto> getDonationByDonorId(Long id) {
         List<Donation> donations = donationRepository.findByDonorId(id);
         List<DonationDto> donationDtoList = new ArrayList<>();
 
@@ -45,16 +59,16 @@ public class DonationService {
 
         return donationDtoList;
     }
-    // update specific field
+
     public void updateDonation(Long donationId, Long donorId, DonationDto dto) {
         Donor donor = donorRepository.findById(donorId)
-                .orElseThrow(() -> new RuntimeException("Donor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with ID: " + donorId));
 
         Donation donation = donationRepository.findById(donationId)
-                .orElseThrow(() -> new RuntimeException("Donation not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Donation not found with ID: " + donationId));
 
         if (!donation.getDonor().getId().equals(donorId)) {
-            throw new RuntimeException("Donation does not belong to the specified donor");
+            throw new BadRequestException("Donation does not belong to the specified donor");
         }
 
         if (dto.getDonationType() != null) {
@@ -67,17 +81,17 @@ public class DonationService {
             donation.setPaymentType(dto.getPaymentType());
         }
 
-        // Save the updated donation to the repository
         donationRepository.save(donation);
     }
-    public void deleteDonation (Long donationId){
-        if (donationRepository.existsById(donationId)) {
-            donationRepository.deleteById(donationId);
-        } else {
-            throw new RuntimeException("Donation not found with ID: " + donationId);
+
+    public void deleteDonation(Long donationId) {
+        if (!donationRepository.existsById(donationId)) {
+            throw new ResourceNotFoundException("Donation not found with ID: " + donationId);
         }
+        donationRepository.deleteById(donationId);
     }
-    public List<DonationDto> filterDonations(DonationType donationType, Double minAmount, Double maxAmount){
+
+    public List<DonationDto> filterDonations(DonationType donationType, Double minAmount, Double maxAmount) {
         List<Donation> allDonations = donationRepository.findAll();
         List<DonationDto> filteredDonations = new ArrayList<>();
 
@@ -99,19 +113,35 @@ public class DonationService {
         return filteredDonations;
     }
 
-    public Double calculateTotalDonations (Long donorId){
-        Double totalAmount = 0.0 ;
+    public Double calculateTotalDonations(Long donorId) {
         List<Donation> donations = donationRepository.findByDonorId(donorId);
         if (donations == null || donations.isEmpty()) {
             return 0.0;
         }
-        for(Donation donation : donations){
-            totalAmount+=donation.getDonationAmount();
-        }
-        return totalAmount;
+
+        return donations.stream()
+                .mapToDouble(Donation::getDonationAmount)
+                .sum();
     }
 
+    public String processDonation(Donation donation) throws StripeException {
+        PaymentIntent paymentIntent = paymentService.createPaymentIntent(donation);
+        donation.setPaymentIntentId(paymentIntent.getId());
+        donationRepository.save(donation);
+        return paymentIntent.getClientSecret();
+    }
 
+    public Donation convertDtoToDonation(DonationDto dto, Long donorId) {
+        Donor donor = donorRepository.findById(donorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found with ID: " + donorId));
 
+        Donation donation = new Donation();
+        donation.setDonationType(dto.getDonationType());
+        donation.setPaymentType(dto.getPaymentType());
+        donation.setDonationAmount(dto.getDonationAmount());
+        donation.setOrganizationId(dto.getOrganizationId());
+        donation.setDonor(donor);
 
+        return donation;
+    }
 }

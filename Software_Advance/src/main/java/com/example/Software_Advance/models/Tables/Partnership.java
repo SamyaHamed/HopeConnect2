@@ -15,7 +15,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "partnerships")
+@Table(
+        name = "partnerships",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"email", "organization_id"})
+        }
+)
 @Data
 @Builder
 @NoArgsConstructor
@@ -36,8 +41,10 @@ public class Partnership {
             regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
             message = "Invalid email format"
     )
-    @Column(name = "email", nullable = false)
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
+
 
     @Column(name = "phone", nullable = false)
     private String phone;
@@ -56,8 +63,6 @@ public class Partnership {
     @Column(name = "status", nullable = false)
     private PartnershipStatus status;
 
-
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
-
 }

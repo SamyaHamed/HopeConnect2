@@ -4,6 +4,7 @@ import com.example.Software_Advance.models.Tables.LogisticsRequest;
 import com.example.Software_Advance.models.Tables.ShipmentTracking;
 import com.example.Software_Advance.models.Enums.ShipmentStatus;
 import com.example.Software_Advance.repositories.*;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,30 +17,26 @@ import java.util.stream.Collectors;
 public class ShipmentTrackingService {
     @Autowired
     private ShipmentTrackingRepository shipmentTrackingRepository;
+
     @Autowired
     private LogisticsRequestRepository logisticsRequestRepository;
 
-    // إضافة سجل تتبع شحنة جديد
     public ShipmentTracking createShipmentTracking(Long logisticsRequestId, ShipmentStatus status, String currentLocation) {
-        // البحث عن LogisticsRequest باستخدام ID
         LogisticsRequest logisticsRequest = logisticsRequestRepository.findById(logisticsRequestId)
-                .orElseThrow(() -> new RuntimeException("LogisticsRequest not found"));
+                .orElseThrow(() -> new EntityNotFoundException("LogisticsRequest not found with ID: " + logisticsRequestId));
 
-        // إنشاء ShipmentTracking وربط الكائنات
         ShipmentTracking shipmentTracking = new ShipmentTracking();
-        shipmentTracking.setLogisticsRequest(logisticsRequest);  // ربط LogisticsRequest
+        shipmentTracking.setLogisticsRequest(logisticsRequest);
         shipmentTracking.setStatus(status);
         shipmentTracking.setCurrentLocation(currentLocation);
         shipmentTracking.setUpdateTime(LocalDateTime.now());
 
-        // حفظ الكائن في المستودع
         return shipmentTrackingRepository.save(shipmentTracking);
     }
 
-    // تحديث حالة أو موقع الشحنة
     public ShipmentTracking updateShipmentTracking(Long shipmentId, ShipmentStatus status, String currentLocation) {
         ShipmentTracking shipmentTracking = shipmentTrackingRepository.findById(shipmentId)
-                .orElseThrow(() -> new RuntimeException("ShipmentTracking not found"));
+                .orElseThrow(() -> new EntityNotFoundException("ShipmentTracking not found with ID: " + shipmentId));
 
         if (status != null) {
             shipmentTracking.setStatus(status);
@@ -56,7 +53,7 @@ public class ShipmentTrackingService {
 
     public void deleteShipmentTracking(Long shipmentId) {
         ShipmentTracking shipmentTracking = shipmentTrackingRepository.findById(shipmentId)
-                .orElseThrow(() -> new RuntimeException("ShipmentTracking not found"));
+                .orElseThrow(() -> new EntityNotFoundException("ShipmentTracking not found with ID: " + shipmentId));
         shipmentTrackingRepository.delete(shipmentTracking);
     }
 
@@ -70,7 +67,7 @@ public class ShipmentTrackingService {
 
     public ShipmentStatus checkShipmentStatus(Long shipmentId) {
         ShipmentTracking shipmentTracking = shipmentTrackingRepository.findById(shipmentId)
-                .orElseThrow(() -> new RuntimeException("ShipmentTracking not found"));
+                .orElseThrow(() -> new EntityNotFoundException("ShipmentTracking not found with ID: " + shipmentId));
 
         return shipmentTracking.getStatus();
     }
@@ -86,7 +83,7 @@ public class ShipmentTrackingService {
 
     public boolean isShipmentDelivered(Long shipmentId) {
         ShipmentTracking shipmentTracking = shipmentTrackingRepository.findById(shipmentId)
-                .orElseThrow(() -> new RuntimeException("ShipmentTracking not found"));
+                .orElseThrow(() -> new EntityNotFoundException("ShipmentTracking not found with ID: " + shipmentId));
 
         return shipmentTracking.getStatus() == ShipmentStatus.DELIVERED;
     }
