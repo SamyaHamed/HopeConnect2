@@ -16,5 +16,3 @@ public class SponsorDto {
     private LocalDate startDate;
     private String status;
 }
-
-

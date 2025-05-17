@@ -3,14 +3,12 @@ package com.example.Software_Advance.dto;
 import com.example.Software_Advance.models.Enums.DonationType;
 import com.example.Software_Advance.models.Enums.PaymentType;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
+
 public class DonationDto {
     private DonationType donationType;
     private Long organizationId;
@@ -26,4 +24,4 @@ public class DonationDto {
         this.organizationId = organizationId;
         this.paymentType = paymentType;
     }
-}
+

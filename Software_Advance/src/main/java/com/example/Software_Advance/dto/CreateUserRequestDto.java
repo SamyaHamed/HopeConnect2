@@ -10,5 +10,4 @@ public class CreateUserRequestDto {
     private VolunteerDto volunteer;
     private OrganizationDto organization;
     private OrphanageDto orphanage;
-
 }
