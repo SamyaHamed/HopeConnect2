@@ -14,4 +14,3 @@ public class DonorDto {
     private List<DonationDto> donations;
 
 }
-

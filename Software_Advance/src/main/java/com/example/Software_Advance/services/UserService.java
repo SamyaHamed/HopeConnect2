@@ -24,7 +24,7 @@ public class UserService {
     @Autowired
     private SponsorRepository sponsorRepository;
 
-   @Autowired
+    @Autowired
     private VolunteerRepository volunteerRepository;
 
     @Autowired
@@ -78,7 +78,7 @@ public class UserService {
                 donorRepository.save(donor);
             }
 
-           case SPONSOR -> {
+            case SPONSOR -> {
                 SponsorDto sponsorDTO = requestDTO.getSponsor();
                 Sponsor sponsor = new Sponsor();
                 sponsor.setUser(savedUser);
@@ -86,8 +86,8 @@ public class UserService {
                 sponsor.setStartDate(sponsorDTO.getStartDate());
                 sponsor.setStatus(sponsorDTO.getStatus());
 
-               savedUser.setSponsor(sponsor);
-               sponsorRepository.save(sponsor);
+                savedUser.setSponsor(sponsor);
+                sponsorRepository.save(sponsor);
             }
 
             case VOLUNTEER -> {
@@ -102,14 +102,14 @@ public class UserService {
                 savedUser.setVolunteer(volunteer);
                 volunteerRepository.save(volunteer);
             }
-              case ORGANIZATION -> {
+            case ORGANIZATION -> {
                 OrganizationDto organizationDTO = requestDTO.getOrganization();
                 Organization organization = new Organization();
                 organization.setUser(savedUser);
                 organization.setServiceType(organizationDTO.getServiceType());
 
-                  savedUser.setOrganization(organization);
-                  organizationRepository.save(organization);
+                savedUser.setOrganization(organization);
+                organizationRepository.save(organization);
             }
 
             case ORPHANAGE -> {

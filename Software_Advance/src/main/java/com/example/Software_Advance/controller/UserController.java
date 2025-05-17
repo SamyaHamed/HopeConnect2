@@ -52,7 +52,7 @@ public class UserController {
         List <User> users =userService.getUserByType(type);
         if(users.isEmpty())
         {return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("There are no users with this Type "+ type+ ".");
+                .body("There are no users with this Type "+ type+ ".");
         }
         return ResponseEntity.ok(users);
     }

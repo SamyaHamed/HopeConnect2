@@ -12,5 +12,4 @@ import lombok.Setter;
 public class OrganizationDto {
     private UserDto user;
     private ServiceType serviceType;
-
 }
