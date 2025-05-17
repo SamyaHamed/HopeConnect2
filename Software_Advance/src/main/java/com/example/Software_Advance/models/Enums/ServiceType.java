@@ -1,3 +1,4 @@
+
 package com.example.Software_Advance.models.Enums;
 
 public enum ServiceType {
@@ -6,4 +7,5 @@ public enum ServiceType {
     FOOD_SUPPORT,
     ORPHAN_CARE,
     SOCIAL_SERVICES
+
 }

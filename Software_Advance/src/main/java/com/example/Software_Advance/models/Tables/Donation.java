@@ -1,3 +1,4 @@
+
 package com.example.Software_Advance.models.Tables;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -13,7 +14,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Donation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

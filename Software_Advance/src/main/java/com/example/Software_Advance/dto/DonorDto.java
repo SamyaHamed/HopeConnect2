@@ -1,3 +1,4 @@
+
 package com.example.Software_Advance.dto;
 
 import lombok.Data;
@@ -12,5 +13,6 @@ import java.util.List;
 public class DonorDto {
     private UserDto user;
     private List<DonationDto> donations;
+
 }
 

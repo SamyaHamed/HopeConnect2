@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.example.Software_Advance.services.*;
-
 import java.util.List;
 
 @RestController
@@ -20,13 +19,13 @@ public class DonationController {
 
     @GetMapping("/{donorId}")
     public ResponseEntity<List<DonationDto>> getDonationsByDonorId(@PathVariable Long donorId) {
-        List<DonationDto> donationDTOs = donationService.getDonationByDonorId(donorId);
+        List<DonationDto> donationDtos = donationService.getDonationByDonorId(donorId);
 
-        if (donationDTOs.isEmpty()) {
+        if (donationDtos.isEmpty()) {
             //return ResponseEntity.status(404).body(null);
         }
 
-        return ResponseEntity.ok(donationDTOs);
+        return ResponseEntity.ok(donationDtos);
     }
     @GetMapping("/filter")
     public ResponseEntity<List<DonationDto>> filterDonations(
@@ -37,7 +36,6 @@ public class DonationController {
         List<DonationDto> filteredDonations = donationService.filterDonations(donationType, minAmount, maxAmount);
         return ResponseEntity.ok(filteredDonations);
     }
-
 
     @PutMapping("/{donationId}") //http://localhost:8080/api/donations/4?donorId=4    example
     public ResponseEntity<String> updateDonation(@PathVariable Long donationId,

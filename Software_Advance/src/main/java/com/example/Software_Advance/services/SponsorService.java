@@ -13,7 +13,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class SponsorService {
-
     private final SponsorRepository sponsorRepository;
 
     public List<Sponsor> getAllSponsors() {

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.example.Software_Advance.repositories.*;
 import com.example.Software_Advance.dto.*;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -32,7 +31,7 @@ public class DonationService {
 
     public List<DonationDto> getDonationByDonorId(Long id){
         List<Donation> donations = donationRepository.findByDonorId(id);
-        List<DonationDto> donationDTOList = new ArrayList<>();
+        List<DonationDto> donationDtoList = new ArrayList<>();
 
         for (Donation donation : donations) {
             DonationDto dto = new DonationDto(
@@ -41,10 +40,10 @@ public class DonationService {
                     donation.getOrganizationId(),
                     donation.getPaymentType()
             );
-            donationDTOList.add(dto);
+            donationDtoList.add(dto);
         }
 
-        return donationDTOList;
+        return donationDtoList;
     }
     // update specific field
     public void updateDonation(Long donationId, Long donorId, DonationDto dto) {
@@ -111,6 +110,8 @@ public class DonationService {
         }
         return totalAmount;
     }
+
+
 
 
 }

@@ -1,3 +1,4 @@
+
 package com.example.Software_Advance.models.Enums;
 
 public enum PaymentType {
@@ -7,4 +8,5 @@ public enum PaymentType {
     BANK_TRANSFER,
     CHECK,
     MOBILE_PAYMENT,
+
 }

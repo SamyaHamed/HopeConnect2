@@ -15,7 +15,4 @@ public class VolunteerDto {
     private String skills;
     private Availability availability;
     private String status;
-
-
 }
-

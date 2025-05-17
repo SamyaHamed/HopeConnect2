@@ -18,7 +18,6 @@ public class VolunteerController {
     @Autowired
     private VolunteerRepository volunteerRepository;
 
-
     @PutMapping("/{id}/status")
     public ResponseEntity<String> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> statusBody) {
         Optional<Volunteer> optional = volunteerRepository.findById(id);
@@ -84,4 +83,3 @@ public class VolunteerController {
         return ResponseEntity.ok(volunteers);
     }
 }
-

@@ -1,3 +1,4 @@
+
 package com.example.Software_Advance.models.Enums;
 
 public enum DonationType {
@@ -5,4 +6,5 @@ public enum DonationType {
     FOOD,
     MEDICAL_SUPPLIES,
     EDUCATIONAL_MATERIALS
+
 }

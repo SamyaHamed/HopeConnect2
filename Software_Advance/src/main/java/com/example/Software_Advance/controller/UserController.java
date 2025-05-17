@@ -3,7 +3,6 @@ import ch.qos.logback.classic.Logger;
 import com.example.Software_Advance.dto.CreateUserRequestDto;
 import com.example.Software_Advance.models.Enums.UserType;
 import com.example.Software_Advance.models.Tables.User;
-
 import com.example.Software_Advance.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ public class UserController {
     @Autowired
     private UserService userService;
     Logger log;
-
 
     @PostMapping("/create")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequestDto requestDTO) {
@@ -54,7 +52,7 @@ public class UserController {
         List <User> users =userService.getUserByType(type);
         if(users.isEmpty())
         {return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("There are no users with this Type "+ type+ ".");
+                .body("There are no users with this Type "+ type+ ".");
         }
         return ResponseEntity.ok(users);
     }
