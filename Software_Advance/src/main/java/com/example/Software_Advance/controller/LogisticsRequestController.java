@@ -49,7 +49,6 @@ public class LogisticsRequestController {
 
 
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRequest(@PathVariable Long id) {
         logisticsRequestService.deleteRequest(id);
