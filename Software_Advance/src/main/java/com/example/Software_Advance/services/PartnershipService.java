@@ -19,7 +19,6 @@ public class PartnershipService {
     @Autowired
     OrganizationRepository organizationRepository;
 
-
     public Partnership addPartnership(PartnershipDto partnershipDTO, Long organizationID) {
         Organization organization = organizationRepository.findById(organizationID)
                 .orElseThrow(() -> new RuntimeException("Organization not found"));

@@ -70,17 +70,13 @@ public class DonationController {
     public ResponseEntity<?> createDonation(@RequestBody DonationDto dto,
                                             @RequestParam Long donorId) {
         try {
-            // تحويل بيانات الـ DTO إلى كائن Donation
             Donation donation = donationService.convertDtoToDonation(dto, donorId);
 
-            // معالجة التبرع والدفع (إذا كان إلكتروني) واسترجاع client secret
             String paymentResult = donationService.processDonation(donation);
 
-            // إذا كانت طريقة الدفع إلكترونية، ترجع client secret
             if (paymentResult.startsWith("pi_") || paymentResult.contains("_secret_")) {
                 return ResponseEntity.ok(new PaymentResponse(paymentResult));
             } else {
-                // طرق دفع أخرى ترجع رسالة مباشرة (مثل نقدي أو تحويل بنكي)
                 return ResponseEntity.ok(paymentResult);
             }
         } catch (StripeException e) {
@@ -118,7 +114,7 @@ public class DonationController {
     @GetMapping("/payment-intent/{paymentIntentId}")
     public ResponseEntity<?> getPaymentStatus(@PathVariable String paymentIntentId) throws StripeException {
         PaymentIntent intent = PaymentIntent.retrieve(paymentIntentId);
-        return ResponseEntity.ok(intent.getStatus()); // مثلا: succeeded, requires_payment_method, canceled, ...
+        return ResponseEntity.ok(intent.getStatus());
     }
     @PostMapping("/webhook")
     public ResponseEntity<String> handleWebhook(@RequestBody String payload,
@@ -138,18 +134,15 @@ public class DonationController {
                 PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer()
                         .getObject().orElse(null);
                 if (intent != null) {
-                    // استعلام التبرع باستخدام معرف الـ PaymentIntent
                     Donation donation = donationRepository.findByPaymentIntentId(intent.getId());
 
                     if (donation != null) {
-                        // تحديث حالة الدفع حسب الـ PaymentIntent status
                         donation.setPaymentStatus(intent.getStatus());
                         donationRepository.save(donation);
                     }
                 }
                 break;
             default:
-                // التعامل مع أحداث أخرى أو تجاهلها
         }
 
         return ResponseEntity.ok("Received");

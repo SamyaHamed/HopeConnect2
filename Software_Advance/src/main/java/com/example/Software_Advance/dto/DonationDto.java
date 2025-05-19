@@ -1,5 +1,4 @@
 package com.example.Software_Advance.dto;
-
 import com.example.Software_Advance.models.Enums.DonationType;
 import com.example.Software_Advance.models.Enums.PaymentType;
 import lombok.Data;

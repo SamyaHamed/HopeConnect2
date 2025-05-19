@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.Software_Advance.dto.*;
 
-
-
 @RequestMapping("/api/sponsors")
 @RequiredArgsConstructor
 public class SponsorController {

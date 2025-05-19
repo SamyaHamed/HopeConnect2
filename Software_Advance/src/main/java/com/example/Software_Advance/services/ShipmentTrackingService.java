@@ -19,24 +19,19 @@ public class ShipmentTrackingService {
     @Autowired
     private LogisticsRequestRepository logisticsRequestRepository;
 
-    // إضافة سجل تتبع شحنة جديد
     public ShipmentTracking createShipmentTracking(Long logisticsRequestId, ShipmentStatus status, String currentLocation) {
-        // البحث عن LogisticsRequest باستخدام ID
         LogisticsRequest logisticsRequest = logisticsRequestRepository.findById(logisticsRequestId)
                 .orElseThrow(() -> new RuntimeException("LogisticsRequest not found"));
 
-        // إنشاء ShipmentTracking وربط الكائنات
         ShipmentTracking shipmentTracking = new ShipmentTracking();
         shipmentTracking.setLogisticsRequest(logisticsRequest);  // ربط LogisticsRequest
         shipmentTracking.setStatus(status);
         shipmentTracking.setCurrentLocation(currentLocation);
         shipmentTracking.setUpdateTime(LocalDateTime.now());
 
-        // حفظ الكائن في المستودع
         return shipmentTrackingRepository.save(shipmentTracking);
     }
 
-    // تحديث حالة أو موقع الشحنة
     public ShipmentTracking updateShipmentTracking(Long shipmentId, ShipmentStatus status, String currentLocation) {
         ShipmentTracking shipmentTracking = shipmentTrackingRepository.findById(shipmentId)
                 .orElseThrow(() -> new RuntimeException("ShipmentTracking not found"));

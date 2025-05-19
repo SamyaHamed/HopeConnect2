@@ -104,7 +104,6 @@ public class DonationService {
 
         return filteredDonations;
     }
-
     public Double calculateTotalDonations (Long donorId){
         Double totalAmount = 0.0 ;
         List<Donation> donations = donationRepository.findByDonorId(donorId);

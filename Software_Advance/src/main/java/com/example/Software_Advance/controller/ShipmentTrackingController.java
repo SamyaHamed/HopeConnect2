@@ -42,7 +42,6 @@ public class ShipmentTrackingController {
         }
     }
 
-    // حذف سجل تتبع الشحنة
     @DeleteMapping("/delete/{shipmentId}")
     public ResponseEntity<Void> deleteShipmentTracking(@PathVariable Long shipmentId) {
         try {
@@ -53,7 +52,6 @@ public class ShipmentTrackingController {
         }
     }
 
-    // الحصول على تتبع الشحنة حسب الـ Logistics Request
     @GetMapping("/by-logistics-request/{logisticsRequestId}")
     public ResponseEntity<List<ShipmentTracking>> getShipmentTrackingByLogisticsRequest(@PathVariable Long logisticsRequestId) {
         List<ShipmentTracking> shipmentTrackings = shipmentTrackingService.getShipmentTrackingByLogisticsRequest(logisticsRequestId);
@@ -63,7 +61,6 @@ public class ShipmentTrackingController {
         return new ResponseEntity<>(shipmentTrackings, HttpStatus.OK);
     }
 
-    // الحصول على الشحنات في حالة معينة
     @GetMapping("/by-status")
     public ResponseEntity<List<ShipmentTracking>> getShipmentTrackingByStatus(@RequestParam ShipmentStatus status) {
         List<ShipmentTracking> shipmentTrackings = shipmentTrackingService.getShipmentTrackingByStatus(status);
@@ -73,7 +70,6 @@ public class ShipmentTrackingController {
         return new ResponseEntity<>(shipmentTrackings, HttpStatus.OK);
     }
 
-    // التحقق من حالة الشحنة
     @GetMapping("/check-status/{shipmentId}")
     public ResponseEntity<ShipmentStatus> checkShipmentStatus(@PathVariable Long shipmentId) {
         try {
@@ -84,7 +80,6 @@ public class ShipmentTrackingController {
         }
     }
 
-    // الشحنات التي تم تحديثها خلال نطاق زمني
     @GetMapping("/by-update-time-range")
     public ResponseEntity<List<ShipmentTracking>> getShipmentTrackingByUpdateTimeRange(
             @RequestParam LocalDateTime startDate,
@@ -96,13 +91,11 @@ public class ShipmentTrackingController {
         return new ResponseEntity<>(shipmentTrackings, HttpStatus.OK);
     }
 
-    // إحصائيات الشحنات حسب الحالة
     @GetMapping("/statistics")
     public ResponseEntity<?> getShipmentStatistics() {
         return new ResponseEntity<>(shipmentTrackingService.getShipmentStatistics(), HttpStatus.OK);
     }
 
-    // هل الشحنة تم تسليمها؟
     @GetMapping("/is-delivered/{shipmentId}")
     public ResponseEntity<Boolean> isShipmentDelivered(@PathVariable Long shipmentId) {
         boolean isDelivered = shipmentTrackingService.isShipmentDelivered(shipmentId);

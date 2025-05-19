@@ -17,7 +17,6 @@ import java.util.List;
 public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
-
     @Autowired
     private UserRepository userRepository;
 

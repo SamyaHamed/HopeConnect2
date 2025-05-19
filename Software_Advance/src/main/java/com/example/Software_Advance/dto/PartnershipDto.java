@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class PartnershipDto {
-
     private Long organizationId;
     private String email;
     private String phone;

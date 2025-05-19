@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+
 public class ReviewDto {
     @NotNull
     private Long targetId;

@@ -47,26 +47,22 @@ public class PartnershipController {
         return ResponseEntity.ok("Partnership deleted successfully!");
     }
 
-    // 1. Get all partnerships by organization ID
     @GetMapping("/organization/{orgId}")
     public ResponseEntity<List<Partnership>> getPartnershipsByOrganization(@PathVariable Long orgId) {
         return ResponseEntity.ok(partnershipService.getPartnershipsByOrganizationId(orgId));
     }
 
-    // 2. Get partnerships by type
     @GetMapping("/type/{type}")
     public ResponseEntity<List<Partnership>> getPartnershipsByType(@PathVariable PartnershipType type) {
         return ResponseEntity.ok(partnershipService.getPartnershipByType(type));
     }
 
-    // 3. Get partnerships by organization ID and status
     @GetMapping("/organization/{orgId}/status/{status}")
     public ResponseEntity<List<Partnership>> getByOrgAndStatus(@PathVariable Long orgId,
                                                                @PathVariable PartnershipStatus status) {
         return ResponseEntity.ok(partnershipService.getByOrganizationAndStatus(orgId, status));
     }
 
-    // 4. Get all partnerships sorted by agreement date
     @GetMapping("/sorted/agreement-date")
     public ResponseEntity<List<Partnership>> getAllSortedByAgreementDate() {
         return ResponseEntity.ok(partnershipService.getAllSortedByAgreementDate());

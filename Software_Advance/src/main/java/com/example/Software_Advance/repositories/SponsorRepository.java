@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-
 @Repository
 public interface SponsorRepository extends JpaRepository<Sponsor, Long> {
 
