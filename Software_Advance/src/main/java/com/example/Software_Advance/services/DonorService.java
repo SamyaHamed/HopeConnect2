@@ -17,7 +17,6 @@ public class DonorService {
     public Optional<Donor> getDonorById(Long id) {
         return donorRepository.findById(id);
     }
-
     public void deleteDonor(Long id) {
         if (donorRepository.existsById(id)) {
             donorRepository.deleteById(id);

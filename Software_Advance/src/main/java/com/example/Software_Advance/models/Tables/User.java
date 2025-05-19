@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -46,13 +47,13 @@ public class User {
     private String phone;
 
 
-    @NotBlank(message = "User type is required")
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable =true)
     private UserType type;
 
 
-    @NotBlank(message = "User role is required")
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;

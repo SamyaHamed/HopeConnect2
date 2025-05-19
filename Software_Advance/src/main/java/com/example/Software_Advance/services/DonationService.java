@@ -2,6 +2,9 @@ package com.example.Software_Advance.services;
 import com.example.Software_Advance.models.Enums.DonationType;
 import com.example.Software_Advance.models.Tables.Donation;
 import com.example.Software_Advance.models.Tables.Donor;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.example.Software_Advance.externalApi.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.Software_Advance.repositories.*;
 import com.example.Software_Advance.dto.*;
@@ -14,6 +17,9 @@ public class DonationService {
     private DonationRepository donationRepository;
     @Autowired
     private DonorRepository donorRepository;
+    @Autowired
+    private PaymentService paymentService;
+
 
     public Donation saveDonation(DonationDto dto, Long donorId) {
         Donor donor = donorRepository.findById(donorId)
@@ -98,7 +104,6 @@ public class DonationService {
 
         return filteredDonations;
     }
-
     public Double calculateTotalDonations (Long donorId){
         Double totalAmount = 0.0 ;
         List<Donation> donations = donationRepository.findByDonorId(donorId);
@@ -112,6 +117,35 @@ public class DonationService {
     }
 
 
+    public String processDonation(Donation donation) throws StripeException {
+        PaymentIntent paymentIntent = paymentService.createPaymentIntent(donation);
+        System.out.println("PaymentIntent ID: " + paymentIntent.getId());
+        System.out.println("Client Secret: " + paymentIntent.getClientSecret());
+
+        donation.setPaymentIntentId(paymentIntent.getId());
+
+        donationRepository.save(donation);
+
+        return paymentIntent.getClientSecret();
+    }
 
 
+    public Donation convertDtoToDonation(DonationDto dto, Long donorId) {
+        Donation donation = new Donation();
+
+        donation.setDonationType(dto.getDonationType());
+        donation.setPaymentType(dto.getPaymentType());
+        donation.setDonationAmount(dto.getDonationAmount());
+
+        donation.setOrganizationId(dto.getOrganizationId());
+
+        Donor donor = donorRepository.findById(donorId)
+                .orElseThrow(() -> new RuntimeException("Donor not found with id: " + donorId));
+        donation.setDonor(donor);
+
+        return donation;
 }
+    }
+
+
+
