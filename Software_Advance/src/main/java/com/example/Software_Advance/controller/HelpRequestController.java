@@ -56,7 +56,6 @@ public class HelpRequestController {
         }
     }
 
-
     @PostMapping
     public ResponseEntity<HelpRequest> addHelpRequest(@RequestBody HelpRequestDto helpRequestDTO) {
         try {
