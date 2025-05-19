@@ -1,5 +1,6 @@
 package com.example.Software_Advance.services;
 
+import com.example.Software_Advance.models.Enums.ParticipationStatus;
 import com.example.Software_Advance.models.Tables.OrgVolunteer;
 import com.example.Software_Advance.repositories.OrgVolunteerRepository;
 import com.example.Software_Advance.repositories.OrganizationRepository;
@@ -46,8 +47,17 @@ public class OrgVolunteerService {
         return orgVolunteerRepository.filterBySkillAndAvailability(skill, availability);
     }
 
+    public OrgVolunteer updateParticipationStatus(Long id, ParticipationStatus newStatus) {
+        OrgVolunteer rec = orgVolunteerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No OrgVolunteer found with id: " + id));
+        rec.setParticipationStatus(newStatus);
+        return orgVolunteerRepository.save(rec);
+    }
 
 
+    public List<OrgVolunteer> filterVolunteers(String skill, ParticipationStatus status) {
+        return orgVolunteerRepository.filterBySkillAndStatus(skill, status);
+    }
 
 
 }

@@ -97,6 +97,7 @@ public class OrgVolunteerController {
         newRecord.setVolunteer(volunteer);
         newRecord.setOrganization(org);
         newRecord.setSkills(dto.getSkills());
+        newRecord.setParticipationStatus(dto.getParticipationStatus());
 
         newRecord.getVolunteer().setOrganizationId(dto.getOrganizationId());
 

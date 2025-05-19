@@ -1,5 +1,6 @@
 package com.example.Software_Advance.models.Tables;
 
+import com.example.Software_Advance.models.Enums.ParticipationStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,6 +33,10 @@ public class OrgVolunteer {
     @Column(name = "skills", nullable = false)
     private String skills;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ParticipationStatus participationStatus;
+
     public Volunteer getVolunteer() {
         return volunteer;
     }
@@ -40,7 +45,6 @@ public class OrgVolunteer {
         this.volunteer = volunteer;
     }
 
-    // Getter و Setter للـ organization
     public Organization getOrganization() {
         return organization;
     }
@@ -49,7 +53,6 @@ public class OrgVolunteer {
         this.organization = organization;
     }
 
-    // Getter و Setter للـ skills
     public String getSkills() {
         return skills;
     }

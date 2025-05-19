@@ -2,6 +2,7 @@ package com.example.Software_Advance.services;
 
 import ch.qos.logback.classic.Logger;
 import com.example.Software_Advance.dto.*;
+import com.example.Software_Advance.models.Enums.ParticipationStatus;
 import com.example.Software_Advance.models.Enums.UserType;
 import com.example.Software_Advance.models.Tables.*;
 import com.example.Software_Advance.repositories.*;
@@ -111,6 +112,8 @@ public class UserService {
                 OrgVolunteer orgVolunteer = new OrgVolunteer();
                 orgVolunteer.setVolunteer(savedVolunteer);
                 orgVolunteer.setSkills(volunteerDTO.getSkills());
+                orgVolunteer.setParticipationStatus(ParticipationStatus.PENDING);
+
 
                 if (volunteerDTO.getOrganizationId() != null) {
                     Optional<Organization> organizationOpt = organizationRepository.findById(volunteerDTO.getOrganizationId());
