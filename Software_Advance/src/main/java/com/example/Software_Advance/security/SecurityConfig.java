@@ -1,5 +1,4 @@
-
-package com.example.Software_Advance.security;
+package com.example.Software_Advance.securety;
 import com.example.Software_Advance.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,10 +27,10 @@ public class SecurityConfig {
     private CustomUserDetailsService userDetailsService;
 
     @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private com.example.Software_Advance.securety.JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
-    // no security
+    /* no security
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -42,7 +41,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // ⬅️ السماح لجميع الطلبات بدون قيود
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
@@ -50,9 +49,9 @@ public class SecurityConfig {
 
         return http.build();
     }
+*/
 
-
-    /*@Bean
+   /* @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
@@ -84,6 +83,40 @@ public class SecurityConfig {
         return http.build();
     }
 */
+
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint()) // 401
+                        .accessDeniedHandler(accessDeniedHandler())           // 403
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/login").permitAll()
+
+                        // USER access to specific endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/users/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
+
+                        // ADMINs can access everything else
+                        .requestMatchers("/**").hasRole("ADMIN")
+
+                        // Any other request must be authenticated
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .userDetailsService(userDetailsService)
+                .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, authException) -> {
