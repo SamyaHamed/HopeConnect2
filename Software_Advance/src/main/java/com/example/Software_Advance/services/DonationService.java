@@ -2,6 +2,9 @@ package com.example.Software_Advance.services;
 import com.example.Software_Advance.models.Enums.DonationType;
 import com.example.Software_Advance.models.Tables.Donation;
 import com.example.Software_Advance.models.Tables.Donor;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.example.Software_Advance.externalApi.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.Software_Advance.repositories.*;
 import com.example.Software_Advance.dto.*;
@@ -14,6 +17,9 @@ public class DonationService {
     private DonationRepository donationRepository;
     @Autowired
     private DonorRepository donorRepository;
+    @Autowired
+    private PaymentService paymentService;
+
 
     public Donation saveDonation(DonationDto dto, Long donorId) {
         Donor donor = donorRepository.findById(donorId)
@@ -112,6 +118,38 @@ public class DonationService {
     }
 
 
+    public String processDonation(Donation donation) throws StripeException {
+        // 1. إنشاء PaymentIntent حسب تفاصيل التبرع (مبلغ، عملة، وصف، إلخ)
+        PaymentIntent paymentIntent = paymentService.createPaymentIntent(donation);
+        System.out.println("PaymentIntent ID: " + paymentIntent.getId());
+        System.out.println("Client Secret: " + paymentIntent.getClientSecret());
+
+        // 2. حفظ PaymentIntent ID داخل التبرع
+        donation.setPaymentIntentId(paymentIntent.getId());
+
+        // 3. حفظ التبرع في قاعدة البيانات (بـحالة أولية مثلاً "pending")
+        donationRepository.save(donation);
+
+        // 4. إرجاع client secret للعميل عشان يكمل الدفع (مثلاً في فرونت إند أو مع Stripe SDK)
+        return paymentIntent.getClientSecret();
+    }
 
 
+    public Donation convertDtoToDonation(DonationDto dto, Long donorId) {
+        Donation donation = new Donation();
+
+        donation.setDonationType(dto.getDonationType());
+        donation.setPaymentType(dto.getPaymentType());
+        donation.setDonationAmount(dto.getDonationAmount());
+
+        donation.setOrganizationId(dto.getOrganizationId());
+
+        Donor donor = donorRepository.findById(donorId)
+                .orElseThrow(() -> new RuntimeException("Donor not found with id: " + donorId));
+        donation.setDonor(donor);
+
+        return donation;
 }
+    }
+
+

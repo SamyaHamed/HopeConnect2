@@ -19,4 +19,6 @@ public interface DonationRepository extends JpaRepository<Donation, Long> {
     List<Donation> findByDonorId(Long donorId);
 
     List<Donation> findByDonationAmountGreaterThanEqual(Double amount);
+
+    Donation findByPaymentIntentId(String id);
 }
