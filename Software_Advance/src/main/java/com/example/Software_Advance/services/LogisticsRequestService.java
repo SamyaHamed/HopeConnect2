@@ -7,12 +7,14 @@ import com.example.Software_Advance.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class LogisticsRequestService {
+
     @Autowired
     private LogisticsRequestRepository repository;
 
@@ -29,8 +31,18 @@ public class LogisticsRequestService {
                 .orElseThrow(() -> new ResourceNotFoundException("Orphanage not found with id: " + dto.getOrphanageId()));
 
         LogisticsRequest request = new LogisticsRequest();
+        request.setDonor(donor);
+        request.setOrphanage(orphanage);
+        request.setDonationType(dto.getDonationType());
+        request.setQuantity(dto.getQuantity());
+        request.setPickupLocation(dto.getPickupLocation());
+        request.setDeliveryLocation(dto.getDeliveryLocation());
+        request.setStatus(dto.getStatus());
+        request.setRequestDate(new Date());
+
         return repository.save(request);
     }
+
     public List<LogisticsRequest> getAllRequests() {
         return repository.findAll();
     }
@@ -42,6 +54,7 @@ public class LogisticsRequestService {
     public List<LogisticsRequest> getLatest5RequestsForDonor(Long donorId) {
         return repository.findTop5ByDonorIdOrderByRequestDateDesc(donorId);
     }
+
     public Map<Long, Long> countRequestsPerOrphanage() {
         return repository.findAll().stream()
                 .collect(Collectors.groupingBy(
@@ -58,6 +71,13 @@ public class LogisticsRequestService {
 
         return repository.findById(id)
                 .map(request -> {
+                    request.setDonor(donor);
+                    request.setOrphanage(orphanage);
+                    request.setDonationType(dto.getDonationType());
+                    request.setQuantity(dto.getQuantity());
+                    request.setPickupLocation(dto.getPickupLocation());
+                    request.setDeliveryLocation(dto.getDeliveryLocation());
+                    request.setStatus(dto.getStatus());
                     return repository.save(request);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("LogisticsRequest not found with id: " + id));
