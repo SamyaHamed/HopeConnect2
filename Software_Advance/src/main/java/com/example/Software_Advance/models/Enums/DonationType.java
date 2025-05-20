@@ -4,6 +4,6 @@ public enum DonationType {
     CLOTHES,
     FOOD,
     MEDICAL_SUPPLIES,
-    EDUCATIONAL_MATERIALS
-
+    EDUCATIONAL_MATERIALS,
+    MONEY,
 }
