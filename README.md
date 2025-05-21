@@ -141,7 +141,7 @@ Our API is comprehensively documented and available via Postman, offering a deta
 - Response structures and status codes  
 - Practical examples to facilitate easy integration
     
-You can view the documentation [here](http://localhost:63343/swagger-initializer.js/index.html?_ijt=lu8hq71uatn03m7iasdd6lhvav&_ij_reload=RELOAD_ON_SAVE).
+You can view the documentation [here](https://682e40392ee7d0f07dfebe11--visionary-cendol-fa6b86.netlify.app).
 
 
 This documentation ensures developers can efficiently understand and interact with the API.
