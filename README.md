@@ -139,9 +139,10 @@ Our API is comprehensively documented and available via Postman, offering a deta
 - Clear descriptions of each endpoint  
 - Request parameters and expected formats  
 - Response structures and status codes  
-- Practical examples to facilitate easy integration  
+- Practical examples to facilitate easy integration
+    
+You can view the documentation [here](http://localhost:63343/swagger-initializer.js/index.html?_ijt=lu8hq71uatn03m7iasdd6lhvav&_ij_reload=RELOAD_ON_SAVE).
 
-You can view the documentation [here] (http://localhost:63343/swagger-initializer.js/index.html?_ijt=lu8hq71uatn03m7iasdd6lhvav&_ij_reload=RELOAD_ON_SAVE).
 
 This documentation ensures developers can efficiently understand and interact with the API.
 
