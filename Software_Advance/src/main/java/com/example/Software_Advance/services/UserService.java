@@ -43,7 +43,7 @@ public class UserService {
     @Autowired
     private OrphanRepository orphanRepository;
 
-    public User saveUser(CreateUserRequestDto requestDTO) {
+   public User saveUser(CreateUserRequestDto requestDTO) {
         UserDto userDTO = requestDTO.getUser();
 
         if (userRepository.existsByEmail(userDTO.getEmail())) {
@@ -55,7 +55,6 @@ public class UserService {
         user.setEmail(userDTO.getEmail());
         String hashedPassword = passwordEncoder.encode(userDTO.getPassword());
         user.setPassword(hashedPassword);
-
         user.setPhone(userDTO.getPhone());
         user.setAddress(userDTO.getAddress());
         user.setType(userDTO.getType());
@@ -64,6 +63,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         switch (userDTO.getType()) {
+
             case DONOR -> {
                 DonorDto donorDTO = requestDTO.getDonor();
                 if (donorDTO == null || donorDTO.getDonations() == null || donorDTO.getDonations().isEmpty()) {
@@ -86,38 +86,38 @@ public class UserService {
                 donor.setDonations(donationList);
                 savedUser.setDonor(donor);
                 donorRepository.save(donor);
-
-
-            SponsorDto sponsorDTO = requestDTO.getSponsor();
-
-            if (sponsorDTO == null || sponsorDTO.getOrphans() == null || sponsorDTO.getOrphans().isEmpty()) {
-                throw new IllegalArgumentException("Should add at least one orphan");
             }
 
-            Sponsor sponsor = new Sponsor();
-            sponsor.setUser(savedUser);
-            sponsor.setSponsorshipType(sponsorDTO.getSponsorshipType());
-            sponsor.setStartDate(sponsorDTO.getStartDate());
-            sponsor.setStatus(sponsorDTO.getStatus());
+            case SPONSOR -> {
+                SponsorDto sponsorDTO = requestDTO.getSponsor();
+                if (sponsorDTO == null || sponsorDTO.getOrphans() == null || sponsorDTO.getOrphans().isEmpty()) {
+                    throw new IllegalArgumentException("Should add at least one orphan");
+                }
 
-            savedUser.setSponsor(sponsor);
-            sponsorRepository.save(sponsor);
+                Sponsor sponsor = new Sponsor();
+                sponsor.setUser(savedUser);
+                sponsor.setSponsorshipType(sponsorDTO.getSponsorshipType());
+                sponsor.setStartDate(sponsorDTO.getStartDate());
+                sponsor.setStatus(sponsorDTO.getStatus());
 
-            for (OrphanDto orphanDto : sponsorDTO.getOrphans()) {
-                Orphan orphan = new Orphan();
-                orphan.setName(orphanDto.getName());
-                orphan.setAge(orphanDto.getAge());
-                orphan.setEducationStatus(orphanDto.getEducationStatus());
-                orphan.setHealthCondition(orphanDto.getHealthCondition());
+                savedUser.setSponsor(sponsor);
+                sponsorRepository.save(sponsor);
 
-                Orphanage orphanage = orphanageRepository.findById(orphanDto.getOrphanageId())
-                        .orElseThrow(() -> new IllegalArgumentException("Orphanage not found with ID: " + orphanDto.getOrphanageId()));
+                for (OrphanDto orphanDto : sponsorDTO.getOrphans()) {
+                    Orphan orphan = new Orphan();
+                    orphan.setName(orphanDto.getName());
+                    orphan.setAge(orphanDto.getAge());
+                    orphan.setEducationStatus(orphanDto.getEducationStatus());
+                    orphan.setHealthCondition(orphanDto.getHealthCondition());
 
-                orphan.setOrphanage(orphanage);
-                orphan.setSponsor(sponsor);
+                    Orphanage orphanage = orphanageRepository.findById(orphanDto.getOrphanageId())
+                            .orElseThrow(() -> new IllegalArgumentException("Orphanage not found with ID: " + orphanDto.getOrphanageId()));
 
-                orphanRepository.save(orphan);
-            }
+                    orphan.setOrphanage(orphanage);
+                    orphan.setSponsor(sponsor);
+
+                    orphanRepository.save(orphan);
+                }
             }
 
             case VOLUNTEER -> {
@@ -135,7 +135,6 @@ public class UserService {
                 orgVolunteer.setSkills(volunteerDTO.getSkills());
                 orgVolunteer.setParticipationStatus(ParticipationStatus.PENDING);
 
-
                 if (volunteerDTO.getOrganizationId() != null) {
                     Optional<Organization> organizationOpt = organizationRepository.findById(volunteerDTO.getOrganizationId());
                     organizationOpt.ifPresent(orgVolunteer::setOrganization);
@@ -143,9 +142,10 @@ public class UserService {
                     orgVolunteer.setOrganization(null);
                 }
 
-                OrgVolunteer saved= orgVolunteerRepository.save(orgVolunteer);
+                OrgVolunteer saved = orgVolunteerRepository.save(orgVolunteer);
                 savedUser.setVolunteer(savedVolunteer);
             }
+
             case ORGANIZATION -> {
                 OrganizationDto organizationDTO = requestDTO.getOrganization();
                 Organization organization = new Organization();
